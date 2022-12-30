@@ -1,0 +1,48 @@
+import os, shutil
+from time import time, sleep
+from datetime import datetime
+
+
+print('Synchronization will be done every 10 seconds')
+
+#here we ask location of file from where we want to copy files.
+print('Please write Location of main Folder, Example:D:\FolderOne\\')
+source_folder=input('')
+
+#here we ask location of folder where we want to paste files.
+print('Please write Location of replica Folder, Example:D:\FolderTwo\\')
+destination_folder=input('')
+
+#declaration of variable of current date
+now = datetime.now()
+CurrentData= now.strftime("%d/%m/%Y")
+
+
+while True:
+    #remove all files from folder before we copy from source folder to destination folder.
+    for filename in os.listdir(destination_folder):
+        file_path = os.path.join(destination_folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+
+    #here we copy from source file and paste to descination file.
+    for file_name in os.listdir(source_folder):
+
+        source = source_folder + file_name
+        destination = destination_folder + file_name
+
+        if os.path.isfile(source):
+            shutil.copy(source, destination)
+            print('File ', file_name, ' has moved from: ',source_folder, ' to: ',destination_folder)
+    
+    #here we write in consule current date.
+    print("Last time updated at: =", CurrentData)
+    #here I set time of repeat process every 60 seconds -> 1 minutes
+    sleep(60 - time() % 60)
+    
